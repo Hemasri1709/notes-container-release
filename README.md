@@ -2,6 +2,16 @@
 
 `notes-web` is the CloudNotes web service: a small Flask app that uses PostgreSQL and Redis. This repository holds its Dockerfile, Docker Compose stack, and release scripts. Everything runs on **local Docker only**: no cloud account, no paid registry, no registry login, no real credentials.
 
+## Before timed work
+
+Fork `https://github.com/kalviumcommunity/notes-container-release`, clone your fork and create `fix/container-release`. Use Linux, macOS or WSL2, Bash, Python 3, Git, curl and running Docker Engine with Compose v2 supporting `--wait`. amd64/arm64 supported. Allow 2 CPUs, 4 GB free memory, 10 GB disk, internet for image/Python downloads and free host ports 8080/5050. Docker Desktop optional where free-use licence applies.
+
+```bash
+bash scripts/prerequisites.sh
+```
+
+Wait for `PREREQUISITES READY` before timing. Helper pulls Python/PostgreSQL/Redis/registry bases, builds supplied correct dependency stage and verifies real push/pull through temporary loopback registry, then removes it. Compose supplies actual task registry; no external setup needed. Dependency build cache is not an offline-build guarantee. No repair files are changed; do not start timer on setup errors or remove unknown resources. Capture initial broken checks before repairs. Submit genuine check output and repaired configuration in PDF; push only to your fork, no upstream PR.
+
 ## Layout
 
 ```text
@@ -43,7 +53,7 @@ Compose stack:
 ```bash
 docker compose up -d --build
 docker compose ps
-curl -i http://localhost:8080/health
+curl --retry 5 --retry-all-errors --retry-delay 2 --fail-with-body -i http://127.0.0.1:8080/health
 ```
 
 Publish and verify:
