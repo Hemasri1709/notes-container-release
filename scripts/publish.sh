@@ -5,6 +5,10 @@ set -euo pipefail
 
 IMAGE="notes-web"
 REGISTRY="localhost:5050"
+VERSION="1.0.0"
 
-docker build -t "$IMAGE:latest" .
-docker push "$IMAGE:latest"
+docker build -t "$IMAGE:$VERSION" .
+docker tag "$IMAGE:$VERSION" "$REGISTRY/$IMAGE:$VERSION"
+docker tag "$IMAGE:$VERSION" "$REGISTRY/$IMAGE:latest"
+docker push "$REGISTRY/$IMAGE:$VERSION"
+docker push "$REGISTRY/$IMAGE:latest"
